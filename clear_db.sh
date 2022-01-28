@@ -1,0 +1,1 @@
+mysql -u emalm -p < config/delete_all.sql
