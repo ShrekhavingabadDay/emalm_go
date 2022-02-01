@@ -11,5 +11,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# this directory is for testing purposes only, no need for it to be exposed online
+uploads/
+
 # Dependency directories (remove the comment below to include it)
 # vendor/

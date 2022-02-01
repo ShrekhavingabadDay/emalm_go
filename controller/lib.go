@@ -3,6 +3,7 @@ package controller
 import (
 	"crypto/rand"
 	"errors"
+	"net/http"
 )
 
 // defaultAlphabet is the alphabet used for ID characters by default.
@@ -35,4 +36,9 @@ func NewUUID(l ...int) (string, error) {
 		id[i] = defaultAlphabet[bytes[i]&63]
 	}
 	return string(id[:size]), nil
+}
+
+func WriteError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusInternalServerError)
+	w.Write([]byte(err.Error()))
 }

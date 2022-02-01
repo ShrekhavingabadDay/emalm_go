@@ -67,9 +67,9 @@ func GetAllImages(w http.ResponseWriter, r *http.Request) {
 	images, err := model.GetAllImages()
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-	} else {
-		json.NewEncoder(w).Encode(images)
+		WriteError(w, err)
+		return
 	}
+
+	json.NewEncoder(w).Encode(images)
 }

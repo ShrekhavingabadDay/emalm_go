@@ -42,7 +42,7 @@ func GetAllImages() ([]DisplayedImage, error) {
 	for rows.Next() {
 		var title, description, uuid, username string
 
-		err := rows.Scan(&title, &description, &uuid, &description)
+		err := rows.Scan(&title, &description, &uuid, &username)
 
 		if err != nil {
 			return images, err
@@ -61,4 +61,23 @@ func GetAllImages() ([]DisplayedImage, error) {
 	defer rows.Close()
 
 	return images, nil
+}
+
+func GetImageIDByUuid(uuid string) (uint64, error) {
+
+	var ID uint64
+
+	query, err := db.Prepare("select ID from images where uuid = ?")
+
+	if err != nil {
+		return 0, err
+	}
+
+	err = query.QueryRow(uuid).Scan(&ID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return ID, nil
 }

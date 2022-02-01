@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # utility functions hell yeah
 panic(){
     >&2 echo "$@"
@@ -64,9 +66,13 @@ do
 
 done < $CONFIG_FILE
 
-# modify the "init.sql" and "delete_all.sql" files to include USE $DB_NAME
+# modify the "init.sql" and "delete_all.sql" files to include USE $DB_NAME; if that line isn't there yet
 # stole it from here epically: https://superuser.com/questions/246837/how-do-i-add-text-to-the-beginning-of-a-file-in-bash#246841
-echo "USE $DB_NAME;" | cat - $INIT_SQL > temp && mv temp $INIT_SQL
+first_line=$(head -n 1 $INIT_SQL)
+if [[ ! $first_line == *"USE"* ]]
+then
+    echo "USE $DB_NAME;" | cat - $INIT_SQL > temp && mv temp $INIT_SQL
+fi
 
 # initialize the database by running the init.sql file
 echo "Running init.sql on the database:"
@@ -76,3 +82,5 @@ if [ ! $? -eq 0 ]
 then
     panic "Database initialization failed!"
 fi
+
+go run main.go
