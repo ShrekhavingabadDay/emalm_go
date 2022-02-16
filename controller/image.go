@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bytes"
 	"emalm/model"
 	"encoding/json"
 	"fmt"
@@ -23,6 +24,14 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer file.Close()
+
+	buf := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buf, file); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("%s\n", http.DetectContentType(buf.Bytes()))
 
 	dst, err := os.Create(fmt.Sprintf("./uploads/images/%s%s", uuid, filepath.Ext(fileHeader.Filename)))
 

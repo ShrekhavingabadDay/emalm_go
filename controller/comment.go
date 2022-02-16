@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"emalm/model"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -25,7 +26,7 @@ func PostComment(w http.ResponseWriter, r *http.Request) {
 
 	uuid := mux.Vars(r)["uuid"]
 
-	if content_type == "image" {
+	if content_type == "img" {
 		content_id, err = model.GetImageIDByUuid(uuid)
 		if err != nil {
 			WriteError(w, err)
@@ -35,12 +36,17 @@ func PostComment(w http.ResponseWriter, r *http.Request) {
 
 	var reply_to sql.NullInt64
 
+	content := r.FormValue("content")
+
+	fmt.Printf("%s\n", content)
+
 	comment := model.Comment{
-		User_id:    1,
-		Content_id: content_id,
-		Posted_at:  time.Now(),
-		Content:    r.FormValue("content"),
-		Reply_to:   uint64(reply_to.Int64),
+		User_id:      1,
+		Content_id:   content_id,
+		Content_type: content_type,
+		Posted_at:    time.Now(),
+		Content:      content,
+		Reply_to:     uint64(reply_to.Int64),
 	}
 
 	err = model.PostComment(comment)
